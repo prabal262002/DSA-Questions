@@ -1,0 +1,21 @@
+class Solution {
+    public int mySqrt(int x) {
+        if(x==1) return 1;
+        int lo=0,hi=46341,ans=0;
+        while(lo<=hi){
+            int mid = (lo+hi)/2;
+            long s = mid*mid;
+            
+            if(s==x){
+                return mid;
+            }
+            else if(s>x)    hi = mid-1;
+            else{
+                lo = mid+1;
+                ans = mid;
+            } 
+        }
+        if(ans == 46341) return ans-1;
+        return ans;
+    }
+}
