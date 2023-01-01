@@ -13,16 +13,13 @@ class Solution {
     
     public int leet (int[][] grid,int m,int n){
         if(m==0 && n==0) return grid[m][n];
-        if(m==0) { t[m][n-1] = leet(grid,m,n-1);
-            return t[m][n-1]+grid[m][n];}
-        if(n==0){
-             t[m-1][n] = leet(grid,m-1,n);
-            return t[m-1][n]+grid[m][n];
-        }
-        if(t[m-1][n]==-1)   t[m-1][n]=leet(grid,m-1,n);
-        if(t[m][n-1]==-1)   t[m][n-1]=leet(grid,m,n-1);
-        int left = t[m-1][n];
-        int up = t[m][n-1];
-        return Math.min(left,up)+grid[m][n];
+        if(m<0 || n<0) return Integer.MAX_VALUE;
+        if(t[m][n]!=-1) return t[m][n];
+        // if(t[m-1][n]==-1)   t[m-1][n]=leet(grid,m-1,n);
+        // if(t[m][n-1]==-1)   t[m][n-1]=leet(grid,m,n-1);
+        int left = leet(grid,m-1,n);
+        int up = leet(grid,m,n-1);
+        t[m][n] = Math.min(left,up)+grid[m][n];
+        return t[m][n];
     }
 }
