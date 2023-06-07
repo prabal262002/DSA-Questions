@@ -1,6 +1,6 @@
 class Solution {
     public int minFlips(int a, int b, int c) {
-        long i = 0,count=0;
+        int count=0;
         while(c>0||b>0||a>0){
             // System.out.println(c + "??");
             if((c&1)==0){
