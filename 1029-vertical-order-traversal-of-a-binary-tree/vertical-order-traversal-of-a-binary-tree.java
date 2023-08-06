@@ -1,68 +1,58 @@
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
 class Solution {
-    class Vrtcl{
+    class VerticalNode {
         int v;
         int h;
-        TreeNode val;
-        Vrtcl(int v, int h, TreeNode val){
-            this.v=v;
-            this.h=h;
-            this.val=val;
+        TreeNode node;
+
+        VerticalNode(int v, int h, TreeNode node) {
+            this.v = v;
+            this.h = h;
+            this.node = node;
         }
     }
 
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-        ArrayList<List<Integer>> ans = new ArrayList<>();
-        if(root== null) return ans;
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null)
+            return result;
 
-        TreeMap<Integer,TreeMap<Integer,ArrayList<Integer>>> m = new TreeMap<>();
-        Queue<Vrtcl> q = new LinkedList<>();
-    
-        q.offer(new Vrtcl(0,0,root));
-        while(!q.isEmpty()){
-            Vrtcl temp = q.poll();
-            TreeNode node = temp.val;
-            int v = temp.v;
-            int h = temp.h;
+        // TreeMap to store vertical levels of nodes, with each level sorted by horizontal distance (h).
+        TreeMap<Integer, TreeMap<Integer, List<Integer>>> verticalMap = new TreeMap<>();
 
-            if(!m.containsKey(v)){
-                m.put(v,new TreeMap<>());
-            }
-            if(!m.get(v).containsKey(h)){
-                m.get(v).put(h,new ArrayList<>());
-            }
-            m.get(v).get(h).add(node.val);
+        Queue<VerticalNode> queue = new LinkedList<>();
+        queue.offer(new VerticalNode(0, 0, root));
 
-            if(node.left!=null) {
-                q.offer(new Vrtcl(v-1,h+1,node.left));
+        while (!queue.isEmpty()) {
+            VerticalNode tempNode = queue.poll();
+            TreeNode node = tempNode.node;
+            int v = tempNode.v; // Vertical distance of the node from the root
+            int h = tempNode.h; // Horizontal distance of the node from the root
+
+            // Add the node value to the verticalMap at its respective vertical and horizontal levels.
+            verticalMap.putIfAbsent(v, new TreeMap<>());
+            verticalMap.get(v).putIfAbsent(h, new ArrayList<>());
+            verticalMap.get(v).get(h).add(node.val);
+
+            // Explore the left and right children of the current node in the tree.
+            if (node.left != null) {
+                queue.offer(new VerticalNode(v - 1, h + 1, node.left));
             }
-            if(node.right!=null) {
-                q.offer(new Vrtcl(v+1,h+1,node.right));
+            if (node.right != null) {
+                queue.offer(new VerticalNode(v + 1, h + 1, node.right));
             }
         }
-        for (Integer v : m.keySet()) {
+
+        // Convert the verticalMap into the final result list.
+        for (Integer v : verticalMap.keySet()) {
             List<Integer> levelList = new ArrayList<>();
-            for (Integer h : m.get(v).keySet()) {
-                ArrayList<Integer> temp = m.get(v).get(h);
-                Collections.sort(temp);
+            for (Integer h : verticalMap.get(v).keySet()) {
+                List<Integer> temp = verticalMap.get(v).get(h);
+                Collections.sort(temp); // Sort the nodes at the same vertical level by their values.
                 levelList.addAll(temp);
             }
-            ans.add(levelList);
+            result.add(levelList);
         }
-        return ans;      
+
+        return result;
     }
 }
