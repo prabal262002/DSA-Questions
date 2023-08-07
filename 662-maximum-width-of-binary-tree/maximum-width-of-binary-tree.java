@@ -1,3 +1,4 @@
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -15,41 +16,52 @@
  */
 class Solution {
     public int widthOfBinaryTree(TreeNode root) {
+        // Check if the root is null
         if (root == null)
             return 0;
 
-        Queue<TreeNode> q = new LinkedList<>();
-        Queue<Integer> qi = new LinkedList<>();
+        // Initialize queues to perform level-order traversal
+        Queue<TreeNode> q = new LinkedList<>(); // To store nodes
+        Queue<Integer> qi = new LinkedList<>(); // To store corresponding indices
 
-        int ans=0;
+        int ans = 0; // Initialize the maximum width to zero
 
+        // Start the level-order traversal from the root
         q.offer(root);
         qi.offer(0);
 
-        while(!q.isEmpty()){
+        while (!q.isEmpty()) {
+            int first = 0; // To store the index of the leftmost node in the current level
+            int last = 0; // To store the index of the rightmost node in the current level
+            int n = q.size(); // Number of nodes in the current level
+            int index = qi.peek(); // Get the index of the first node in the current level
 
-            int first=0,last=0;
-            int n = q.size();
-            int index = qi.peek(); // to make the id starting from 0.
+            // Iterate over all nodes in the current level
+            for (int i = 0; i < n; i++) {
+                TreeNode temp = q.poll(); // Dequeue the node from the queue
+                int curri = qi.poll() - index; // Calculate the relative index of the node in the level
 
-            for(int i=0;i<n;i++){
-                TreeNode temp = q.poll();
-                int curri= qi.poll()-index;// Now it will be zero.
+                if (i == 0) first = curri; // If it's the first node, update 'first' accordingly
+                if (i == n - 1) last = curri; // If it's the last node, update 'last' accordingly
 
-                if(i==0) first = curri;
-                if(i==n-1) last = curri;
-
-                if(temp.left!=null) {
+                // Enqueue the left and right children, along with their indices
+                if (temp.left != null) {
                     q.offer(temp.left);
-                    qi.offer(curri*2+1);
+                    qi.offer(curri * 2 + 1);
                 }
-                if(temp.right!=null){
+                if (temp.right != null) {
                     q.offer(temp.right);
-                    qi.offer(curri*2+2);
+                    qi.offer(curri * 2 + 2);
                 }
             }
-            ans = Math.max(last-first+1,ans);
+
+            // Calculate the width for the current level
+            int currentWidth = last - first + 1;
+            // Update the maximum width if necessary
+            ans = Math.max(ans, currentWidth);
         }
+
+        // Return the maximum width of the binary tree
         return ans;
     }
 }
